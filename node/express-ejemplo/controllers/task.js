@@ -1,13 +1,24 @@
 const db = require("../config/mysql");
 
 exports.index = (req, res) => {
-  db.connection.query(
-    "SELECT id, title, description, isDone FROM tasks;",
-    (err, rows, fields) => {
-      if (err) console.log(err);
-      res.json(rows);
-    }
-  );
+  let sql = "SELECT id, title, description, isDone FROM tasks";
+  let queryParam = "";
+  const bind = [];
+  if (req.query.title) {
+    queryParam += "title like ?";
+    bind.push(`%${req.query.title}%`);
+  }
+  if (req.query.status) {
+    queryParam += "isDone = ?";
+    if (req.query.status === "done") bind.push(true);
+    else bind.push(false);
+  }
+  if (queryParam !== "") sql = `${sql} WHERE ${queryParam}`;
+
+  db.connection.query(sql, bind, (err, rows, fields) => {
+    if (err) console.log(err);
+    res.json(rows);
+  });
 
   // tasks = [{
   //   name: "task 1",
@@ -43,7 +54,7 @@ exports.store = (req, res) => {
           throw err;
         }
         console.log(row);
-        res.json({ message: `tarea creada con id  ${row.insertId}`});
+        res.json({ message: `tarea creada con id  ${row.insertId}` });
       }
     );
   }
