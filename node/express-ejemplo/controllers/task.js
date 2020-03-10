@@ -1,35 +1,24 @@
 const db = require("../config/mysql");
 
 exports.index = (req, res) => {
-  let sql = "SELECT id, title, description, isDone FROM tasks";
-  let queryParam = "";
-  const bind = [];
-  if (req.query.title) {
-    queryParam += "title like ?";
-    bind.push(`%${req.query.title}%`);
-  }
-  if (req.query.status) {
-    queryParam += "isDone = ?";
-    if (req.query.status === "done") bind.push(true);
-    else bind.push(false);
-  }
-  if (queryParam !== "") sql = `${sql} WHERE ${queryParam}`;
+  const sql =
+    "SELECT id, title, description, isDone FROM tasks WHERE title like ? AND (isDone = ?)";
+  const bindParams = [];
 
-  db.connection.query(sql, bind, (err, rows, fields) => {
+  const title = req.query.title || "";
+
+  bindParams.push(`%${title}%`);
+
+  let status = req.query.status || "0 OR 1";
+  if (status === "done") status = 1;
+  if (status === "todo") status = 0;
+
+  bindParams.push(status);
+
+  db.connection.query(sql, bindParams, (err, rows, fields) => {
     if (err) console.log(err);
     res.json(rows);
   });
-
-  // tasks = [{
-  //   name: "task 1",
-  //   description: "description task"
-  // },
-  // {
-  //   name: "task 2",
-  //   description: "description task"
-  // }]
-
-  // res.json( {'tasks': tasks} )
 };
 
 exports.show = (req, res) => {
