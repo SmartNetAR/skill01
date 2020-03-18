@@ -12,7 +12,7 @@ exports.getConnection = cb => {
 };
 
 exports.startTransaction = (conn, cb) => {
-  conn.beginTrasaction(err => {
+  conn.beginTransaction(err => {
     return cb(err);
   });
 };

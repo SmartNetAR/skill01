@@ -26,7 +26,7 @@ exports.register = (req, res) => {
     (conn, cb) => {
       const hashedPassword = crypto
         .createHash("sha256")
-        .update(userData.password)
+        .update(password)
         .digest("hex");
 
       const user = {
@@ -44,25 +44,31 @@ exports.register = (req, res) => {
           }
 
           return cb(null, conn, result.insertId);
-        },
-
-        (err, conn, userId) => {
-          if (err) {
-            if (conn) {
-              mysqlService.closeConnection(conn);
-            }
-            return res.status(500).send("Internal Server Error.");
-          }
-
-          const resp = {
-            id: userId,
-            fullname,
-            email
-          };
-
-          return res.send(resp);
         }
       );
     }
-  ]);
+  ],
+  (err, conn, userId) => {
+    if (err) {
+      if (conn) {
+        mysqlService.closeConnection(conn);
+      }
+
+      return res.status(500).send("Internal Server Error.");
+    } else {
+      mysqlService.commitTransaction(conn, ( err ) => {
+        if (err ) {
+          return res.status(500).send("Internal Server Error.");
+        }
+        const resp = {
+          id: userId,
+          fullname,
+          email
+        };
+
+        return res.send(resp);
+      })
+    }
+  }
+  );
 };
