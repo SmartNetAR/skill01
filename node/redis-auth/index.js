@@ -23,4 +23,4 @@ app.use(
 
 app.use("/", router);
 
-http.createServer(app).listen(config.port);
+http.createServer(app).listen(config.port, () => console.log(`Escuchando en el puerto ${config.port}`));
