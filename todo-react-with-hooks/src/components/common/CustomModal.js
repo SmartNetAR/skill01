@@ -7,7 +7,7 @@ const CustomModal = ({ isActive, children, title, handleClose }) => {
 
 
   return (
-    <Modal show={isActive} >
+    <Modal show={isActive} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           {title}
