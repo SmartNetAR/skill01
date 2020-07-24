@@ -1,0 +1,3 @@
+[submodule "node/redis-auth"]
+	path = node/redis-auth
+	url = https://github.com/SmartNetAR/node-redis-auth.git
