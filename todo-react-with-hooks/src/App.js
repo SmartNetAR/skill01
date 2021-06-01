@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Form from './components/Form';
 import { getTodos } from './services/todos'
-import ListsContainer from './components/ListContainer';
+import ListsContainer from './components/ListsContainer';
 import CustomModal from './components/common/CustomModal'
 import useModalWithData from './hooks/useModalWithData'
 
@@ -27,6 +27,7 @@ const App = () => {
 
     setForm({ ...form, [name]: value })
   }
+
   const handleSubmit = e => {
     e.preventDefault()
     const { name, description } = form
@@ -45,6 +46,7 @@ const App = () => {
       setIsModalOpened(false)
     }
   }
+
   useEffect(() => {
     getTodos().then(data => setTasks(data))
   }, [])
@@ -52,22 +54,27 @@ const App = () => {
   const changeTaskStatus = (task) => {
     const taskUpdated = tasks.map(taskEl => {
       if (taskEl.id === task.id)
+      {
         taskEl.done = !taskEl.done
+      }
+
       return taskEl
     })
     setTasks(taskUpdated)
   }
+
   const editTask = (task) => {
     setForm(task)
-    setModalData(form)
+    // setModalData(form)
     setIsModalOpened(true)
   }
+
   return (
     <div className="container">
 
       <CustomModal
         isActive={isModalOpened}
-        title={form.id ?? form.id > 0 ? "Editar tarea" : "Nuevo tarea"}
+        title={form.id ?? form.id > 0 ? "Editar tarea" : "Nueva tarea"}
         handleClose={() => setIsModalOpened(false)}
       >
         <Form

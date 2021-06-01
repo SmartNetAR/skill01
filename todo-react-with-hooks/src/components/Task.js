@@ -12,12 +12,12 @@ const Task = ( { task, onChangeState, onEditTask } ) => {
           <div className="row">
             <div className="col-12 col-sm-6">
               <button className="btn btn-outline-success"
-                onClick={() => onChangeState()} >
+                onClick={onChangeState} >
                 { task.done ? "Reiniciar" : "Finalizar"}
               </button>
             </div>
             <div className="col-12 col-sm-6">
-              <button className="btn btn-outline-primary float-right" onClick={() => onEditTask()} >Editar</button>
+              <button className="btn btn-outline-primary float-right" onClick={onEditTask} >Editar</button>
             </div>
           </div>
         </div>
